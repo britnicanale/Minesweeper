@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <link rel="stylesheet" type="text/css" href="src/style.css">
+</head>
+<body id="body">
+  <div id = "content-area">
+    <h1 id = "heading">WELCOME TO MINESWEEPER</h1>
+    <div id = "button-row" class="row">
+      <button id = "start-button">Start</button>
+    </div>
+    <div id = "gameInfo"> <span id ="flags"></span><span id ="time"></span></div>
+  </div>
+
+
+  <div id="endGameModal" class="modal">
+
+    <div class="modal-content">
+
+      <h4>Game Over</h4>
+      <p>Uh oh! You hit a mine.</p>
+      <span>
+        <button class = "newGameModalButton">New Game</button>
+        <button class = "close">Close</button>
+    </div>
+
+  </div>
+
+  <div id="winGameModal" class="modal">
+
+    <div class="modal-content">
+
+      <h4>Congratulations</h4>
+      <p>You didn't hit any mines!</p>
+      <span>
+        <button class = "newGameModalButton">New Game</button>
+        <button class = "close">Close</button>
+    </div>
+
+  </div>
+
+</body>
+
+<script src = "src/index.js">
+</script>
+</html>
