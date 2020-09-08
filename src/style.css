@@ -1,5 +1,6 @@
 body{
   text-decoration: none;
+  font-family: "Lucida Sans Unicode", "Lucida Grande", sans-serif;
 }
 
 #heading{
@@ -15,24 +16,84 @@ button{
   text-decoration: none;
   display: inline-block;
   font-size: 16px;
+  margin: 10px
 
 }
 
-span{
-  padding: 20px
+#content-area{
+  text-align:center;
 }
 
-#gameInfo{
-  padding: 20px
+
+
+
+.card {
+  box-shadow: 0 2px 5px 0 rgba(0,0,0,.2);
+  border-style: solid;
+  border-color: lightgray;
+  border-width:1px;
+  border-radius:5px;
+  width:500px;
+  height: 400px;
+  display:none;
+  margin:auto;
+  margin-top: 50px;
+  padding: 20px;
+  overflow:auto;
+  text-align: left;
+  resize: vertical;
+
 }
 
-#gameInfo{
+.how-to-row{
+  height:60px;
+  padding:10px;
+  display:inline-block;
+}
+
+.square{
+  width:50px;
+  text-align: center;
+  height:35px;
+  padding-top:15px;
+  float:left;
+  margin-right:10px;
+}
+ .description{
+   margin-top:15px;
+   float:left;
+   height: 50px
+ }
+
+.flag-example{
+  background-color: yellow;
+}
+.mine-example{
+  color: white;
+  background-color: red;
+}
+.covered-example{
+  color:white;
+  background-color: gray;
+}
+.uncovered-example{
+  background-color: lightgray;
+}
+
+h4, h5{
+  text-align:center;
+}
+
+
+#gameInfo, #flags, #time{
+  padding: 20px;
   text-align:center;
 }
 
 #button-row{
-  width: 100px;
+padding: 20px;
   margin: auto;
+
 }
 
 #endGameModal {

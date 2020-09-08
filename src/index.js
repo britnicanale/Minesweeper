@@ -4,6 +4,8 @@ var body = document.getElementById("body");
 var contentArea = document.getElementById("content-area");
 var buttonRow = document.getElementById("button-row");
 var startButton = document.getElementById("start-button");
+var howToButton = document.getElementById("how-to-button");
+var howToCard = document.getElementById("how-to-card");
 var endModal = document.getElementById("endGameModal");
 var winModal = document.getElementById("winGameModal");
 var newGameModalButtons = document.getElementsByClassName("newGameModalButton");
@@ -54,6 +56,16 @@ window.addEventListener("click", function(event){
   }
 })
 
+howToButton.addEventListener("click", function(){
+  if(howToCard.style.display == "block"){
+    howToCard.style.display = "none"
+    howToButton.innerHTML = "How to Play"
+  }else{
+    howToCard.style.display = "block"
+    howToButton.innerHTML = "Hide Instructions"
+  }
+})
+
 startButton.addEventListener("click", function(){
   //Starts the game
   setUpGame();
@@ -63,7 +75,7 @@ startButton.addEventListener("click", function(){
   newGameButton = document.createElement("button");
   newGameButton.innerHTML = "New Game"
   newGameButton.addEventListener("click", newGame);
-  buttonRow.appendChild(newGameButton)
+  buttonRow.insertBefore(newGameButton, howToButton)
 }) ;
 
 
@@ -120,18 +132,19 @@ function onClick(event){
   element = event["srcElement"]
   id = element["id"]
 
+  if(element.style.backgroundColor != "yellow"){
+    //checks if the box clicked is a mine, ends the game if so
+    if (minesList.includes(id)){
+      element.style.backgroundColor="red";
+      endGame();
+    }
+    //checks the neighbors if not a mine. checks if there are boxes left. if not, you win.
+    else{
+      checkNeighbors(findNeighbors(id),element, id)
+      if (boxes.length ==0) {
+        winGame();
 
-  //checks if the box clicked is a mine, ends the game if so
-  if (minesList.includes(id)){
-    element.style.backgroundColor="red";
-    endGame();
-  }
-  //checks the neighbors if not a mine. checks if there are boxes left. if not, you win.
-  else{
-    checkNeighbors(findNeighbors(id),element, id)
-    if (boxes.length ==0) {
-      winGame();
-
+      }
     }
   }
 }
