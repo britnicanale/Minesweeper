@@ -11,20 +11,3 @@ Minesweeper is a single-player video game. The goal of the game is to clear a bo
 
 <h5> Game Instructions </h5>
 To play, traverse the board by uncovering boxes. When you come accross a box with no mines, use the number of neighboring boxes with mines and the number of uncovered neighboring boxes to deduce the locations of the mines and flag them to avoid accidentally uncovering them. If you uncover a mine, you lose the game. If you successfully uncover all boxes except those with mines, you win the game.
-
-<h5> Game Board Guide </h5>
-<span class = "how-to-row">
-  <div class = "square flag-example"></div><div class = "description"> = Flag</div>
-</span>
-<br>
-<span class = "how-to-row">
-  <div class = "square mine-example"></div><div class = "description"> = Mine</div>
-</span>
-<br>
-<span class = "how-to-row">
-  <div class = "square covered-example"></div> <div class = "description"> = Covered Box</div>
-</span>
-<br>
-<span class = "how-to-row">
-  <div class = "square uncovered-example">?</div> <div class = "description"> = Uncovered Box</div>
-</span>
