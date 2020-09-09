@@ -17,7 +17,14 @@ button{
   display: inline-block;
   font-size: 16px;
   margin: 10px
+}
 
+select{
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+  margin: 10px;
+  height: 48px
 }
 
 #content-area{
@@ -83,7 +90,7 @@ h4, h5{
 }
 
 
-#gameInfo, #flags, #time{
+#gameInfo, #flags, #time, #current-level{
   padding: 20px;
   text-align:center;
 }

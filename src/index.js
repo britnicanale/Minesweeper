@@ -9,22 +9,27 @@ var howToCard = document.getElementById("how-to-card");
 var endModal = document.getElementById("endGameModal");
 var winModal = document.getElementById("winGameModal");
 var newGameModalButtons = document.getElementsByClassName("newGameModalButton");
-var closeModals = document.getElementsByClassName("close")
-var gameInfo = document.getElementById("gameInfo")
-var time = document.getElementById("time")
-var flagSpan = document.getElementById("flags")
+var closeModals = document.getElementsByClassName("close");
+var gameInfo = document.getElementById("gameInfo");
+var time = document.getElementById("time");
+var flagSpan = document.getElementById("flags");
+var levelSpan = document.getElementById("current-level");
+var levelSelect = document.getElementById("level");
+
 
 /*Initializing some variables*/
 var gameTime = 0;         //Keeps track of how many seconds the game has been played
-var flags = 12;           //Keeps track of how many flags are left
+var flags;                //Keeps track of how many flags are left
 var timerVar;             //Holds the timer variable, allows the timer to be started and stopped
 var minesweeper;          //holds the minesweeper element, which is a table
 var minesList;            //holds the list containing the ids of all the mines
 var minesweeperBoard = [];//holds a 2D array containing the board. Used for holding the elements of each box and removing the event listeners
 var boxes = [];           //keeps track of the boxes that are uncovered. Used to determine when one has won the game
+var level;                //keeps track of game level selected
 //holds the colors of the numbers depending on how many neighbors are mines
-var colors = ["blue", "green", "darkred", "orangered", "purple", "teal", "magenta"]
+const COLORS = ["blue", "green", "darkred", "orangered", "purple", "teal", "magenta"]
 
+const LEVEL_DICT = {"Easy": {"size": 10, "mines": 12, "pixels": "50px"}, "Medium": {"size": 16, "mines": 40, "pixels": "40px"},"Hard": {"size": 22, "mines": 100, "pixels": "30px"}}
 
 /*Triggered after a new game is started following a previous game.*/
 function newGame(){
@@ -87,20 +92,20 @@ function setUpGame(){
   minesweeper.classList.add("table");
   boxes=[]
   minesweeperBoard = [];
-
+  level = levelSelect.value
   //adding elements to the board
-  for(i = 0; i < 10; i++){
+  for(i = 0; i < LEVEL_DICT[level].size; i++){
     row = document.createElement("tr");
     minesweeperBoard.push([]);
-    for(j = 0; j < 10; j++){
+    for(j = 0; j < LEVEL_DICT[level].size; j++){
       col = document.createElement("td")
       minesweeperBoard[i].push(col);
       coordinate = "" + i + "," + j             //creating the coordinate/id format
       col.setAttribute("id", coordinate)        //sets the id as the coordinate
       col.style.backgroundColor="gray";         //default background color is gray
       col.style.textAlign="center";
-      col.style.height="50px";
-      col.style.width="50px";
+      col.style.height=LEVEL_DICT[level].pixels;
+      col.style.width=LEVEL_DICT[level].pixels;
       col.addEventListener("click", onClick);   //adds board behavior for click event
       col.addEventListener("contextmenu",onContextMenu); //adds board behavior for contextmenu (right-click) event
       row.appendChild(col);                     //adds the child to the element
@@ -117,10 +122,11 @@ function setUpGame(){
   contentArea.append(minesweeper)               //adds board to web page
 
   gameTime = 0;                                 //initializes game time
-  flags = 12;                                   //initializes flags
+  flags = LEVEL_DICT[level].mines;              //initializes flags
   timer();                                      //starts timer
   timerVar = setInterval(timer, 1000)           //sets timer interval
   flagSpan.innerHTML = "Flags Left: " +flags    //starts keeping track of flags
+  levelSpan.innerHTML = "Current Level: "+level
 }
 
 
@@ -173,8 +179,8 @@ function timer(){
 
 function clearEventListeners(){
   //removes the event listeners from the board to prevent further game play following the end of the game
-  for(i = 0; i < 10; i++){
-    for(j = 0; j < 10; j++){
+  for(i = 0; i < LEVEL_DICT[level].size; i++){
+    for(j = 0; j < LEVEL_DICT[level].size; j++){
       element =minesweeperBoard[i][j];
       element.removeEventListener("click", onClick);
       element.removeEventListener("context-menu", onContextMenu);
@@ -187,9 +193,9 @@ function clearEventListeners(){
 function addMines(){
   //Randomly determines which boxes are mines.
   mines = []
-  while(mines.length <12){
-    i = Math.floor(Math.random() * 10);
-    j = Math.floor(Math.random() * 10);
+  while(mines.length <LEVEL_DICT[level].mines){
+    i = Math.floor(Math.random() * LEVEL_DICT[level].size);
+    j = Math.floor(Math.random() * LEVEL_DICT[level].size);
     coord = "" + i + "," + j
     if (!mines.includes(coord)){
       mines.push(coord);
@@ -269,16 +275,15 @@ function changeBox(element, num, id){
   //Changes the box according to the number of mines next to it
   element.style.backgroundColor = "lightgray"
   if(num != 0){
-    element.style.color = colors[num]
+    element.style.color = COLORS[num]
   }
   element.innerHTML = num == 0 ? "" : num;
-  element.style.height = "50px";
-  element.style.width = "50px";
-  console.log(id);
+  element.style.height = LEVEL_DICT[level].pixels;
+  element.style.width = LEVEL_DICT[level].pixels;
   //Removes the ID from the list of covered boxes
   let index = boxes.indexOf(id)
   if (index != -1){
-    console.log(boxes.splice(index, 1))
+    boxes.splice(index, 1)
   }
 }
 
@@ -315,15 +320,16 @@ function checkNeighbors(neighbors, element, id){
 
 function findNeighbors(id){
   /*Finds the neighboring boxes given a box*/
-  r = parseInt(id[0])
-  c = parseInt(id[2])
+  let id_vals = id.split(",")
+  r = parseInt(id_vals[0])
+  c = parseInt(id_vals[1])
   neighbors = []
   for(i = -1; i < 2; i++){
     for (j = -1; j < 2; j++){
       rn = r + i;
       cn = c + j;
       neighbor = ""+rn+","+cn
-      if (neighbor!= id && rn >= 0 && rn <10 && cn >= 0 && cn<10){
+      if (neighbor!= id && rn >= 0 && rn <LEVEL_DICT[level].size && cn >= 0 && cn<LEVEL_DICT[level].size){
         neighbors.push(neighbor)
       }
     }
