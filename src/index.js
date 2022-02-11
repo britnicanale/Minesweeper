@@ -134,9 +134,9 @@ function setUpGame(){
 
 
 function onClick(event){
-
   element = event["srcElement"]
   id = element["id"]
+  console.log(id)
 
   if(element.style.backgroundColor != "yellow"){
     //checks if the box clicked is a mine, ends the game if so
@@ -144,9 +144,22 @@ function onClick(event){
       element.style.backgroundColor="red";
       endGame();
     }
+    neighbors = findNeighbors(id);
+    console.log(neighbors)
+    if(element.style.backgroundColor == "lightgray") {
+      if(numMines(neighbors) == numFlags(neighbors)) {
+        console.log("CLICKED");
+        // for(i = 0; i < neighbors.length; i++) {
+        //   r = neighbors[i][0];
+        //   c = neighbors[i][2];
+        //   checkNeighbors(findNeighbors(neighbors[i]), minesweeperBoard[r][c], neighbors[i]);
+        // }
+        checkNeighbors(neighbors, element, id);
+      }
+    }
     //checks the neighbors if not a mine. checks if there are boxes left. if not, you win.
     else{
-      checkNeighbors(findNeighbors(id),element, id)
+      checkNeighbors(neighbors,element, id)
       if (boxes.length ==0) {
         winGame();
 
@@ -235,6 +248,21 @@ function numMines(neighbors){
   return numNeighbors;
 }
 
+function numFlags(neighbors) {
+  numNeighborFlags = 0;
+  for(i = 0; i < neighbors.length; i++) {
+    r = neighbors[i][0];
+    c = neighbors[i][2];
+    // console.log(minesweeperBoard[r][c])
+    // console.log(minesweeperBoard[r][c].style.backgroundColor)
+    if (minesweeperBoard[r][c].style.backgroundColor == "yellow") {
+      // console.log("flag")
+      numNeighborFlags+=1;
+    }
+  }
+  return numNeighborFlags;
+}
+
 class MySet{
   /*Set object created for convenience*/
   values;
@@ -273,25 +301,52 @@ class MySet{
 
 function changeBox(element, num, id){
   //Changes the box according to the number of mines next to it
-  element.style.backgroundColor = "lightgray"
-  if(num != 0){
-    element.style.color = COLORS[num]
+  if(element.style.backgroundColor != "yellow") {
+    element.style.backgroundColor = "lightgray"
+    if(num != 0){
+      element.style.color = COLORS[num]
+    }
+    element.innerHTML = num == 0 ? "" : num;
+    element.style.height = LEVEL_DICT[level].pixels;
+    element.style.width = LEVEL_DICT[level].pixels;
+    //Removes the ID from the list of covered boxes
+    let index = boxes.indexOf(id)
+    if (index != -1){
+      boxes.splice(index, 1)
+    }
   }
-  element.innerHTML = num == 0 ? "" : num;
-  element.style.height = LEVEL_DICT[level].pixels;
-  element.style.width = LEVEL_DICT[level].pixels;
-  //Removes the ID from the list of covered boxes
-  let index = boxes.indexOf(id)
-  if (index != -1){
-    boxes.splice(index, 1)
-  }
+  
 }
 
 function checkNeighbors(neighbors, element, id){
+  console.log(id);
   let numNeighbors = numMines(neighbors);
   changeBox(element, numNeighbors,id);
   //reveals all surrounding boxes if a box has no mines surrounding it
   if(numNeighbors == 0){
+    surrounding = new MySet();      //keeps track of neighboring boxes
+    neighbors.forEach(function(n){
+      surrounding.add(n);
+    })
+    checked = new MySet()           //keeps track of boxes that have already been checked
+    //Until no neighbors have been checked, loops through all the neighboring boxes
+    while(surrounding.size > 0){
+      let nextId = surrounding.pop();
+      let myNeighbors = findNeighbors(nextId);
+      let numNextMines = numMines(myNeighbors);
+      changeBox(document.getElementById(nextId), numNextMines, nextId);
+      if (numNextMines == 0){
+        //adds neighboring boxes to surrounding if they haven't already been checked
+        myNeighbors.forEach(function(val){
+          if(!checked.has(val)){
+            surrounding.add(val)
+          }
+        })
+        checked.add(nextId);
+      }
+    }
+  }
+  else if(numNeighbors == numFlags(neighbors)) {
     surrounding = new MySet();      //keeps track of neighboring boxes
     neighbors.forEach(function(n){
       surrounding.add(n);
